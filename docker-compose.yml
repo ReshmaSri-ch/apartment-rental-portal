@@ -1,0 +1,73 @@
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: apartment-db
+    environment:
+      POSTGRES_DB: ${DB_NAME:-apartment_db}
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-password}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backend/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${DB_USER:-postgres}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - apartment-network
+
+  # Flask Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: apartment-backend
+    environment:
+      DB_HOST: postgres
+      DB_NAME: ${DB_NAME:-apartment_db}
+      DB_USER: ${DB_USER:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-password}
+      DB_PORT: 5432
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY:-super-secret-key-change-in-production}
+      FLASK_HOST: 0.0.0.0
+      FLASK_PORT: 5000
+      FLASK_DEBUG: ${FLASK_DEBUG:-False}
+    ports:
+      - "5000:5000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:5000/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - apartment-network
+    restart: unless-stopped
+
+  # Angular Frontend with Nginx
+  frontend:
+    build:
+      context: ./frontend/user-portal
+      dockerfile: Dockerfile
+    container_name: apartment-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - apartment-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  apartment-network:
+    driver: bridge
