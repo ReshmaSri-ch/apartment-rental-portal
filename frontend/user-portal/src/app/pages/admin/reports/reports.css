@@ -1,0 +1,21 @@
+/* Reports Styles */
+
+.tab-button {
+    padding: 12px 24px;
+    font-weight: 600;
+    color: #6b7280;
+    background: transparent;
+    border: none;
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.tab-button:hover {
+    color: #8b5cf6;
+}
+
+.tab-button.active {
+    color: #8b5cf6;
+    border-bottom-color: #8b5cf6;
+}

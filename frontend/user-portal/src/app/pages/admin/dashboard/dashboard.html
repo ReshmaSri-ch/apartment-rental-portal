@@ -1,0 +1,79 @@
+<div class="min-h-screen p-8 animate-fade-in">
+  <div class="max-w-7xl mx-auto">
+
+    <div class="text-center mb-10">
+      <h1 class="text-5xl font-bold text-gradient mb-2 animate-slide-left">
+        Admin Dashboard
+      </h1>
+      <p class="text-gray-600 text-lg animate-slide-right">Manage your properties and bookings</p>
+    </div>
+
+    <!-- STATS -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+      <div *ngFor="let stat of stats; let i = index" class="stat-card" [style.animation-delay]="(i * 0.1) + 's'"
+        style="animation: scaleIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) backwards">
+        <div class="flex justify-between items-start">
+          <div>
+            <p class="text-gray-500 text-sm uppercase font-semibold mb-2">{{ stat.label }}</p>
+            <p class="text-4xl font-bold text-gradient">
+              {{ stat.value }}
+            </p>
+          </div>
+          <div class="text-4xl opacity-20">📊</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ACTION CARDS -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+      <div class="glass-card p-8 hover-lift"
+        style="animation: fadeIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) 0.2s backwards">
+        <div class="text-4xl mb-4">🏗️</div>
+        <h3 class="text-2xl font-bold mb-3 text-gradient">Manage Towers & Flats</h3>
+        <p class="text-gray-600 mb-6 leading-relaxed">
+          Add, edit, or remove towers and flats. Configure property details and availability.
+        </p>
+        <button class="btn-primary" routerLink="/admin/units">
+          Manage Units →
+        </button>
+      </div>
+
+      <div class="glass-card p-8 hover-lift"
+        style="animation: fadeIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) 0.3s backwards">
+        <div class="text-4xl mb-4">🎯</div>
+        <h3 class="text-2xl font-bold mb-3 text-gradient">Amenities</h3>
+        <p class="text-gray-600 mb-6 leading-relaxed">
+          Manage gym, pool, parking and other premium facilities for residents.
+        </p>
+        <button class="btn-success" routerLink="/admin/amenities">
+          Manage Amenities →
+        </button>
+      </div>
+
+      <div class="glass-card p-8 hover-lift"
+        style="animation: fadeIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) 0.4s backwards">
+        <div class="text-4xl mb-4">📋</div>
+        <h3 class="text-2xl font-bold mb-3 text-gradient">Booking Requests</h3>
+        <p class="text-gray-600 mb-6 leading-relaxed">
+          Review and process pending booking requests. Approve or reject applications.
+        </p>
+        <button class="btn-secondary" routerLink="/admin/bookings">
+          View Bookings →
+        </button>
+      </div>
+
+      <div class="glass-card p-8 hover-lift"
+        style="animation: fadeIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) 0.5s backwards">
+        <div class="text-4xl mb-4">📈</div>
+        <h3 class="text-2xl font-bold mb-3 text-gradient">Reports</h3>
+        <p class="text-gray-600 mb-6 leading-relaxed">
+          View detailed occupancy and payment reports. Track revenue and analytics.
+        </p>
+        <button class="btn-outline" routerLink="/admin/reports">
+          View Reports →
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

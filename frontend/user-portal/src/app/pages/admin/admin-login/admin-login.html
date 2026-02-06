@@ -1,0 +1,34 @@
+<div class="min-h-screen flex items-center justify-center animated-bg p-6">
+  <div class="glass-card p-10 w-full max-w-md animate-scale">
+
+    <div class="text-center mb-8">
+      <div class="text-5xl mb-3">👨‍💼</div>
+      <h2 class="text-4xl font-bold text-gradient mb-2">Admin Portal</h2>
+      <p class="text-gray-600">Access administrative controls</p>
+    </div>
+
+    <input type="email" id="adminEmail" name="adminEmail" placeholder="Admin Email" class="input-field mb-4"
+      [(ngModel)]="email" />
+
+    <input type="password" id="adminPassword" name="adminPassword" placeholder="Password" class="input-field mb-4"
+      [(ngModel)]="password" />
+
+    <p *ngIf="error" class="text-red-500 text-sm mb-4 font-medium">
+      ⚠️ {{ error }}
+    </p>
+
+    <button class="btn-primary w-full mb-4" (click)="login()">
+      Admin Sign In
+    </button>
+
+    <div class="text-center">
+      <p class="text-gray-600">
+        User?
+        <a routerLink="/login" class="text-gradient font-semibold hover:underline cursor-pointer">
+          Login here
+        </a>
+      </p>
+    </div>
+
+  </div>
+</div>

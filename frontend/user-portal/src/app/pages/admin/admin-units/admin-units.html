@@ -1,0 +1,316 @@
+<div class="min-h-screen p-8 bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50">
+  <!-- Header -->
+  <div class="mb-8 animate-fade-in">
+    <h1 class="text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-3">
+      Manage Towers & Flats
+    </h1>
+    <p class="text-gray-600 text-lg">Oversee your entire property portfolio from one place</p>
+  </div>
+
+  <!-- Success/Error Messages -->
+  <div *ngIf="success"
+    class="mb-6 p-4 bg-gradient-to-r from-green-50 to-emerald-50 border-l-4 border-green-500 rounded-lg text-green-800 font-semibold shadow-sm animate-slide-down">
+    <span class="text-xl mr-2">✓</span> {{ success }}
+  </div>
+  <div *ngIf="error"
+    class="mb-6 p-4 bg-gradient-to-r from-red-50 to-pink-50 border-l-4 border-red-500 rounded-lg text-red-800 font-semibold shadow-sm animate-slide-down">
+    <span class="text-xl mr-2">✗</span> {{ error }}
+  </div>
+
+  <!-- Tabs -->
+  <div class="mb-8">
+    <div class="inline-flex bg-white rounded-xl shadow-lg p-1.5">
+      <button (click)="switchTab('towers')" [class.bg-gradient-to-r]="activeTab === 'towers'"
+        [class.from-blue-600]="activeTab === 'towers'" [class.to-purple-600]="activeTab === 'towers'"
+        [class.text-white]="activeTab === 'towers'" [class.shadow-md]="activeTab === 'towers'"
+        [class.text-gray-600]="activeTab !== 'towers'"
+        class="px-8 py-3 rounded-lg font-bold transition-all duration-300 transform hover:scale-105">
+        <span class="text-2xl mr-2">🏢</span> Towers
+      </button>
+      <button (click)="switchTab('flats')" [class.bg-gradient-to-r]="activeTab === 'flats'"
+        [class.from-blue-600]="activeTab === 'flats'" [class.to-purple-600]="activeTab === 'flats'"
+        [class.text-white]="activeTab === 'flats'" [class.shadow-md]="activeTab === 'flats'"
+        [class.text-gray-600]="activeTab !== 'flats'"
+        class="px-8 py-3 rounded-lg font-bold transition-all duration-300 transform hover:scale-105">
+        <span class="text-2xl mr-2">🏠</span> Flats
+      </button>
+    </div>
+  </div>
+
+  <!-- TOWERS TAB -->
+  <div *ngIf="activeTab === 'towers'" class="animate-fade-in">
+    <!-- Add Button -->
+    <div class="mb-6">
+      <button (click)="openTowerModal()"
+        class="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3.5 rounded-xl font-bold shadow-lg transform hover:scale-105 transition-all duration-300">
+        <span class="text-xl mr-2">+</span> Add New Tower
+      </button>
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="loading" class="text-center py-20">
+      <div class="inline-block animate-spin text-6xl mb-4">⏳</div>
+      <p class="text-gray-600 text-xl font-semibold">Loading towers...</p>
+    </div>
+
+    <!-- Towers Grid -->
+    <div *ngIf="!loading && towers.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div *ngFor="let tower of towers; let i = index"
+        class="bg-white rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden transform hover:-translate-y-2 border border-gray-100"
+        [style.animation-delay]="(i * 0.1) + 's'" style="animation: fadeInScale 0.6s ease-out backwards">
+
+        <!-- Card Header -->
+        <div class="bg-gradient-to-r from-blue-600 to-purple-600 p-6 text-white">
+          <div class="flex items-start justify-between">
+            <div>
+              <div class="text-5xl mb-3">🏢</div>
+              <h3 class="text-2xl font-bold">{{ tower.name }}</h3>
+            </div>
+            <div class="bg-white bg-opacity-20 rounded-lg px-3 py-1.5 text-sm font-semibold">
+              {{ tower.total_floors * tower.flats_per_floor }} Flats
+            </div>
+          </div>
+        </div>
+
+        <!-- Card Body -->
+        <div class="p-6 space-y-4">
+          <!-- Stats -->
+          <div class="grid grid-cols-2 gap-4">
+            <div class="bg-blue-50 rounded-lg p-3 text-center">
+              <div class="text-3xl font-bold text-blue-600">{{ tower.total_floors }}</div>
+              <div class="text-xs text-gray-600 font-semibold mt-1">Floors</div>
+            </div>
+            <div class="bg-purple-50 rounded-lg p-3 text-center">
+              <div class="text-3xl font-bold text-purple-600">{{ tower.flats_per_floor }}</div>
+              <div class="text-xs text-gray-600 font-semibold mt-1">Flats/Floor</div>
+            </div>
+          </div>
+
+          <!-- Address -->
+          <div class="flex items-start text-sm text-gray-600">
+            <span class="text-lg mr-2">📍</span>
+            <span>{{ tower.address || 'No address provided' }}</span>
+          </div>
+        </div>
+
+        <!-- Card Footer -->
+        <div class="px-6 pb-6 flex gap-3">
+          <button (click)="openTowerModal(tower)"
+            class="flex-1 bg-blue-100 hover:bg-blue-200 text-blue-700 font-bold py-3 rounded-xl transition-all duration-200 transform hover:scale-105">
+            ✏️ Edit
+          </button>
+          <button (click)="deleteTower(tower.id!, tower.name)"
+            class="flex-1 bg-red-100 hover:bg-red-200 text-red-700 font-bold py-3 rounded-xl transition-all duration-200 transform hover:scale-105">
+            🗑️ Delete
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!loading && towers.length === 0" class="bg-white rounded-2xl shadow-xl p-16 text-center">
+      <div class="text-8xl mb-6">🏗️</div>
+      <h3 class="text-3xl font-bold text-gray-800 mb-3">No Towers Yet</h3>
+      <p class="text-gray-600 text-lg mb-6">Get started by adding your first tower</p>
+      <button (click)="openTowerModal()"
+        class="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3 rounded-xl font-bold shadow-lg transform hover:scale-105 transition-all duration-300">
+        + Add Your First Tower
+      </button>
+    </div>
+  </div>
+
+  <!-- FLATS TAB -->
+  <div *ngIf="activeTab === 'flats'" class="animate-fade-in">
+    <!-- Top Bar: Add Button + Filters -->
+    <div class="mb-6 flex flex-wrap gap-4 items-center">
+      <button (click)="openFlatModal()"
+        class="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3.5 rounded-xl font-bold shadow-lg transform hover:scale-105 transition-all duration-300">
+        <span class="text-xl mr-2">+</span> Add New Flat
+      </button>
+
+      <!-- Filters -->
+      <div class="flex-1 flex flex-wrap gap-3">
+        <!-- Search -->
+        <input [(ngModel)]="searchQuery" (ngModelChange)="filterFlats()" type="text"
+          placeholder="🔍 Search by flat number..."
+          class="px-4 py-2.5 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent">
+
+        <!-- Tower Filter -->
+        <select [(ngModel)]="selectedTowerFilter" (ngModelChange)="filterFlats()"
+          class="px-4 py-2.5 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent bg-white">
+          <option value="">All Towers</option>
+          <option *ngFor="let tower of uniqueTowers" [value]="tower">Tower {{ tower }}</option>
+        </select>
+
+        <!-- Floor Filter -->
+        <select [(ngModel)]="selectedFloorFilter" (ngModelChange)="filterFlats()"
+          class="px-4 py-2.5 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent bg-white">
+          <option value="">All Floors</option>
+          <option *ngFor="let floor of uniqueFloors" [value]="floor">Floor {{ floor }}</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="loading" class="text-center py-20">
+      <div class="inline-block animate-spin text-6xl mb-4">⏳</div>
+      <p class="text-gray-600 text-xl font-semibold">Loading flats...</p>
+    </div>
+
+    <!-- Flats Grid -->
+    <div *ngIf="!loading && filteredFlats.length > 0"
+      class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <div *ngFor="let flat of filteredFlats; let i = index"
+        class="bg-white rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden transform hover:-translate-y-2 border border-gray-100"
+        [style.animation-delay]="(i * 0.05) + 's'" style="animation: fadeInScale 0.6s ease-out backwards">
+
+        <!-- Card Header -->
+        <div
+          [class]="flat.available ? 'bg-gradient-to-r from-green-600 to-teal-600' : 'bg-gradient-to-r from-gray-600 to-gray-700'"
+          class="p-5 text-white">
+          <div class="flex items-start justify-between mb-2">
+            <div class="text-4xl">🏠</div>
+            <div [class]="flat.available ? 'bg-white bg-opacity-20' : 'bg-red-500'"
+              class="rounded-lg px-2 py-1 text-xs font-bold">
+              {{ flat.available ? '✓ Available' : '✗ Occupied' }}
+            </div>
+          </div>
+          <h3 class="text-2xl font-bold">Flat {{ flat.flat_no }}</h3>
+          <p class="text-sm opacity-90 mt-1">Tower {{ flat.tower }} • Floor {{ flat.floor }}</p>
+        </div>
+
+        <!-- Card Body -->
+        <div class="p-5 space-y-3">
+          <!-- Rent -->
+          <div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-3 text-center border-2 border-blue-200">
+            <div class="text-sm text-gray-600 font-semibold mb-1">Monthly Rent</div>
+            <div class="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              ₹{{ flat.rent.toLocaleString() }}
+            </div>
+          </div>
+
+          <!-- Amenities -->
+          <div *ngIf="flat.amenities && flat.amenities.length > 0">
+            <div class="text-xs text-gray-500 font-semibold mb-2">AMENITIES</div>
+            <div class="flex flex-wrap gap-2">
+              <span *ngFor="let amenity of flat.amenities"
+                class="bg-blue-100 text-blue-700 text-xs font-bold px-2 py-1 rounded-full">
+                {{ amenity.icon }} {{ amenity.name }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card Footer -->
+        <div class="px-5 pb-5 flex gap-2">
+          <button (click)="openFlatModal(flat)"
+            class="flex-1 bg-blue-100 hover:bg-blue-200 text-blue-700 font-bold py-2.5 rounded-xl transition-all duration-200 transform hover:scale-105 text-sm">
+            ✏️ Edit
+          </button>
+          <button (click)="deleteFlat(flat.id!, flat.flat_no)"
+            class="flex-1 bg-red-100 hover:bg-red-200 text-red-700 font-bold py-2.5 rounded-xl transition-all duration-200 transform hover:scale-105 text-sm">
+            🗑️ Delete
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!loading && filteredFlats.length === 0 && flats.length > 0"
+      class="bg-white rounded-2xl shadow-xl p-12 text-center">
+      <div class="text-6xl mb-4">🔍</div>
+      <h3 class="text-2xl font-bold text-gray-800 mb-2">No Flats Found</h3>
+      <p class="text-gray-600">Try adjusting your filters</p>
+    </div>
+
+    <div *ngIf="!loading && flats.length === 0" class="bg-white rounded-2xl shadow-xl p-16 text-center">
+      <div class="text-8xl mb-6">🏗️</div>
+      <h3 class="text-3xl font-bold text-gray-800 mb-3">No Flats Yet</h3>
+      <p class="text-gray-600 text-lg mb-6">Add towers first, then create flats</p>
+      <button (click)="openFlatModal()"
+        class="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3 rounded-xl font-bold shadow-lg transform hover:scale-105 transition-all duration-300">
+        + Add Your First Flat
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<!-- Tower Modal -->
+<div *ngIf="showTowerModal"
+  class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4 animate-fade-in">
+  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg transform animate-scale-in">
+    <!-- Modal Header -->
+    <div class="bg-gradient-to-r from-blue-600 to-purple-600 p-6 rounded-t-2xl">
+      <div class="flex justify-between items-center text-white">
+        <h3 class="text-2xl font-bold">
+          {{ editingTowerId ? '✏️ Edit Tower' : '➕ Add New Tower' }}
+        </h3>
+        <button (click)="closeTowerModal()"
+          class="text-white hover:text-gray-200 text-3xl transform hover:rotate-90 transition-transform duration-300">&times;</button>
+      </div>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="p-8">
+      <div class="space-y-5">
+        <!-- Name -->
+        <div>
+          <label class="block text-gray-700 font-bold mb-2 text-sm uppercase tracking-wide">Tower Name *</label>
+          <input [(ngModel)]="towerForm.name" type="text" placeholder="e.g., Tower D"
+            class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all duration-200">
+        </div>
+
+        <!-- Floors & Flats Grid -->
+        <div class="grid grid-cols-2 gap-4">
+          <!-- Floors -->
+          <div>
+            <label class="block text-gray-700 font-bold mb-2 text-sm uppercase tracking-wide">Total Floors *</label>
+            <input [(ngModel)]="towerForm.total_floors" type="number" min="1" max="20"
+              class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all duration-200">
+          </div>
+
+          <!-- Flats per Floor -->
+          <div>
+            <label class="block text-gray-700 font-bold mb-2 text-sm uppercase tracking-wide">Flats/Floor *</label>
+            <input [(ngModel)]="towerForm.flats_per_floor" type="number" min="1" max="20"
+              class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all duration-200">
+          </div>
+        </div>
+
+        <!-- Total Flats Preview -->
+        <div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-4 text-center border-2 border-blue-200">
+          <div class="text-sm text-gray-600 font-semibold mb-1">Total Flats</div>
+          <div class="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            {{ towerForm.total_floors * towerForm.flats_per_floor }}
+          </div>
+        </div>
+
+        <!-- Address -->
+        <div>
+          <label class="block text-gray-700 font-bold mb-2 text-sm uppercase tracking-wide">Address</label>
+          <textarea [(ngModel)]="towerForm.address" rows="3" placeholder="Full address (optional)"
+            class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all duration-200 resize-none"></textarea>
+        </div>
+
+        <!-- Error in Modal -->
+        <div *ngIf="error"
+          class="p-4 bg-gradient-to-r from-red-50 to-pink-50 border-l-4 border-red-500 rounded-lg text-red-800 font-semibold animate-shake">
+          <span class="text-xl mr-2">⚠️</span> {{ error }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="flex gap-4 p-6 bg-gray-50 rounded-b-2xl">
+      <button (click)="closeTowerModal()"
+        class="flex-1 px-6 py-3 border-2 border-gray-300 rounded-xl font-bold text-gray-700 hover:bg-gray-100 transition-all duration-200 transform hover:scale-105">
+        Cancel
+      </button>
+      <button (click)="saveTower()" [disabled]="!towerForm.name || loading"
+        class="flex-1 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-bold hover:from-blue-700 hover:to-purple-700 disabled:from-gray-400 disabled:to-gray-400 transition-all duration-200 shadow-lg transform hover:scale-105 disabled:transform-none disabled:cursor-not-allowed">
+        {{ loading ? 'Saving...' : '💾 Save Tower' }}
+      </button>
+    </div>
+  </div>
+</div>

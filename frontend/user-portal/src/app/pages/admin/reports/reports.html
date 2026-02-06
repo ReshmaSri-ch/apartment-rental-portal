@@ -1,0 +1,185 @@
+<div class="container mx-auto px-6 py-8">
+    <!-- Header -->
+    <h1 class="text-4xl font-bold text-gradient mb-10 animate-slide-left">📊 Reports & Analytics</h1>
+
+    <!-- Error Message -->
+    <div *ngIf="error" class="alert alert-error mb-6">
+        ❌ {{ error }}
+    </div>
+
+    <!-- Tab Navigation -->
+    <div class="flex gap-4 mb-8 border-b border-gray-200">
+        <button class="tab-button" [class.active]="selectedTab === 'occupancy'" (click)="selectTab('occupancy')">
+            🏢 Occupancy Report
+        </button>
+        <button class="tab-button" [class.active]="selectedTab === 'payments'" (click)="selectTab('payments')">
+            💰 Payment Status
+        </button>
+        <button class="tab-button" [class.active]="selectedTab === 'revenue'" (click)="selectTab('revenue')">
+            📈 Revenue Report
+        </button>
+    </div>
+
+    <!-- OCCUPANCY REPORT -->
+    <div *ngIf="selectedTab === 'occupancy'" class="animate-fade-in">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div *ngFor="let tower of occupancyReport; let i = index" class="glass-card p-6 hover-lift animate-fade-in"
+                [style.animation-delay.ms]="i * 100">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-2xl font-bold text-gray-800">Tower {{ tower.tower }}</h3>
+                    <span class="text-4xl">🏢</span>
+                </div>
+
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">Total Flats</span>
+                        <span class="font-bold text-lg">{{ tower.total_flats }}</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">Occupied</span>
+                        <span class="font-bold text-lg text-green-600">{{ tower.occupied }}</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">Available</span>
+                        <span class="font-bold text-lg text-blue-600">{{ tower.available }}</span>
+                    </div>
+                    <div class="pt-3 border-t border-gray-200">
+                        <div class="flex justify-between items-center">
+                            <span class="font-semibold">Occupancy Rate</span>
+                            <span class="font-bold text-xl text-gradient">{{ tower.occupancy_percentage }}%</span>
+                        </div>
+                        <!-- Progress Bar -->
+                        <div class="w-full bg-gray-200 rounded-full h-3 mt-2">
+                            <div class="bg-gradient-to-r from-purple-600 to-pink-600 h-3 rounded-full transition-all duration-500"
+                                [style.width.%]="tower.occupancy_percentage"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PAYMENT STATUS REPORT -->
+    <div *ngIf="selectedTab === 'payments' && paymentReport" class="animate-fade-in">
+        <!-- Payment Summary Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div *ngFor="let summary of paymentReport.payment_summary; let i = index"
+                class="glass-card p-6 hover-lift animate-fade-in" [style.animation-delay.ms]="i * 100">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-xl font-bold capitalize">{{ summary.status }}</h3>
+                    <span class="badge" [ngClass]="{
+                  'badge-success': summary.status === 'paid',
+                  'badge-warning': summary.status === 'pending',
+                  'badge-error': summary.status === 'overdue'
+                }">
+                        {{ summary.percentage }}%
+                    </span>
+                </div>
+                <div class="space-y-2">
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Leases</span>
+                        <span class="font-bold">{{ summary.count }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Total Rent</span>
+                        <span class="font-bold">₹{{ summary.total_rent | number:'1.0-0' }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Leases Table -->
+        <div class="glass-card p-6">
+            <h3 class="text-2xl font-bold mb-6">Recent Leases</h3>
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="border-b border-gray-200">
+                            <th class="text-left p-3 font-semibold">User</th>
+                            <th class="text-left p-3 font-semibold">Flat</th>
+                            <th class="text-left p-3 font-semibold">Rent</th>
+                            <th class="text-left p-3 font-semibold">Status</th>
+                            <th class="text-left p-3 font-semibold">Start Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let lease of paymentReport.recent_leases"
+                            class="border-b border-gray-100 hover:bg-gray-50">
+                            <td class="p-3">{{ lease.user_email }}</td>
+                            <td class="p-3">{{ lease.flat_no }} - Tower {{ lease.tower }}</td>
+                            <td class="p-3 font-semibold">₹{{ lease.monthly_rent | number:'1.0-0' }}</td>
+                            <td class="p-3">
+                                <span class="badge" [ngClass]="{
+                        'badge-success': lease.payment_status === 'paid',
+                        'badge-warning': lease.payment_status === 'pending',
+                        'badge-error': lease.payment_status === 'overdue'
+                      }">
+                                    {{ lease.payment_status }}
+                                </span>
+                            </td>
+                            <td class="p-3 text-gray-600">{{ lease.start_date | date:'mediumDate' }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- REVENUE REPORT -->
+    <div *ngIf="selectedTab === 'revenue' && revenueReport" class="animate-fade-in">
+        <!-- Total Summary Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="glass-card p-6 hover-lift animate-fade-in">
+                <div class="text-gray-600 mb-2">Total Leases</div>
+                <div class="text-3xl font-bold text-gradient">{{ revenueReport.totals.total_leases }}</div>
+            </div>
+            <div class="glass-card p-6 hover-lift animate-fade-in" style="animation-delay: 100ms">
+                <div class="text-gray-600 mb-2">Monthly Revenue</div>
+                <div class="text-3xl font-bold text-green-600">₹{{ revenueReport.totals.total_monthly_revenue |
+                    number:'1.0-0' }}</div>
+            </div>
+            <div class="glass-card p-6 hover-lift animate-fade-in" style="animation-delay: 200ms">
+                <div class="text-gray-600 mb-2">Total Deposits</div>
+                <div class="text-3xl font-bold text-blue-600">₹{{ revenueReport.totals.total_deposits | number:'1.0-0'
+                    }}</div>
+            </div>
+            <div class="glass-card p-6 hover-lift animate-fade-in" style="animation-delay: 300ms">
+                <div class="text-gray-600 mb-2">Average Rent</div>
+                <div class="text-3xl font-bold text-purple-600">₹{{ revenueReport.totals.average_rent | number:'1.0-0'
+                    }}</div>
+            </div>
+        </div>
+
+        <!-- Revenue by Tower -->
+        <div class="glass-card p-6">
+            <h3 class="text-2xl font-bold mb-6">Revenue by Tower</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div *ngFor="let tower of revenueReport.revenue_by_tower; let i = index"
+                    class="p-6 bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl"
+                    [style.animation-delay.ms]="i * 100">
+                    <h4 class="text-xl font-bold mb-4">Tower {{ tower.tower }}</h4>
+                    <div class="space-y-3">
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Active Leases</span>
+                            <span class="font-bold">{{ tower.active_leases }}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Monthly Revenue</span>
+                            <span class="font-bold text-green-600">₹{{ tower.monthly_revenue | number:'1.0-0' }}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Deposits Held</span>
+                            <span class="font-bold text-blue-600">₹{{ tower.total_deposits | number:'1.0-0' }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="loading" class="text-center py-20">
+        <div class="text-6xl mb-4">⏳</div>
+        <p class="text-xl text-gray-600">Loading reports...</p>
+    </div>
+</div>

@@ -1,0 +1,33 @@
+<div class="min-h-screen flex items-center justify-center animated-bg p-6">
+  <div class="glass-card p-10 w-full max-w-md animate-scale">
+
+    <div class="text-center mb-8">
+      <h2 class="text-4xl font-bold text-gradient mb-2">Welcome Back</h2>
+      <p class="text-gray-600">Sign in to access your account</p>
+    </div>
+
+    <input type="email" id="email" name="email" placeholder="Email address" class="input-field mb-4"
+      [(ngModel)]="email" />
+
+    <input type="password" id="password" name="password" placeholder="Password" class="input-field mb-4"
+      [(ngModel)]="password" />
+
+    <p *ngIf="error" class="text-red-500 text-sm mb-4 font-medium">
+      ⚠️ {{ error }}
+    </p>
+
+    <button class="btn-primary w-full mb-4" (click)="login()">
+      Sign In
+    </button>
+
+    <div class="text-center">
+      <p class="text-gray-600">
+        Don't have an account?
+        <a routerLink="/register" class="text-gradient font-semibold hover:underline cursor-pointer">
+          Register now
+        </a>
+      </p>
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,56 @@
+<div class="min-h-screen p-8 animate-fade-in">
+  <div class="max-w-5xl mx-auto">
+
+    <div class="mb-8">
+      <h2 class="text-5xl font-bold text-gradient mb-3 animate-slide-left">My Bookings</h2>
+      <p class="text-gray-600 text-lg animate-slide-left">Track the status of your rental applications</p>
+    </div>
+
+    <!-- LOADING -->
+    <div *ngIf="loading" class="text-center py-16">
+      <div class="inline-block animate-spin text-6xl mb-4">⏳</div>
+      <p class="text-gray-600 text-lg">Loading your bookings...</p>
+    </div>
+
+    <!-- NO BOOKINGS -->
+    <div *ngIf="!loading && bookings.length === 0" class="glass-card p-16 text-center">
+      <div class="text-6xl mb-4">📭</div>
+      <h3 class="text-2xl font-bold text-gray-800 mb-2">No Bookings Yet</h3>
+      <p class="text-gray-600 mb-6">You haven't made any booking requests yet.</p>
+      <button class="btn-primary" routerLink="/flats">Browse Flats</button>
+    </div>
+
+    <!-- BOOKINGS LIST -->
+    <div class="space-y-6">
+      <div *ngFor="let b of bookings; let i = index" class="glass-card p-6 hover-lift"
+        [style.animation-delay]="(i * 0.1) + 's'"
+        style="animation: fadeIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) backwards">
+
+        <div class="flex justify-between items-start">
+          <div>
+            <div class="flex items-center gap-3 mb-2">
+              <span class="text-3xl">🏢</span>
+              <div>
+                <p class="text-2xl font-bold text-gradient">Flat {{ b.flat }}</p>
+                <p class="text-gray-500">Floor {{ b.floor }}</p>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <span *ngIf="b.status === 'Requested'" class="badge badge-warning">
+              ⏳ Requested
+            </span>
+            <span *ngIf="b.status === 'Approved'" class="badge badge-success">
+              ✓ Approved
+            </span>
+            <span *ngIf="b.status === 'Rejected'" class="badge badge-error">
+              ✗ Rejected
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

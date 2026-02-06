@@ -1,0 +1,77 @@
+<div class="min-h-screen p-8 animate-fade-in">
+  <div class="max-w-7xl mx-auto">
+
+    <div class="mb-8">
+      <h2 class="text-5xl font-bold text-gradient mb-3 animate-slide-left">Find Your Perfect Home</h2>
+      <p class="text-gray-600 text-lg animate-slide-left">Browse available apartments by floor</p>
+    </div>
+
+    <div class="glass-card p-8 mb-8 animate-scale">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        <!-- Floor Selection -->
+        <div>
+          <label class="block text-gray-700 font-semibold mb-3 text-lg">Select Floor</label>
+          <select [(ngModel)]="selectedFloor" (change)="loadFlats()" class="select-field w-full">
+            <option [ngValue]="undefined">-- Choose a floor --</option>
+            <option *ngFor="let f of floors" [value]="f">Floor {{f}}</option>
+          </select>
+        </div>
+
+        <!-- Tower Selection -->
+        <div>
+          <label class="block text-gray-700 font-semibold mb-3 text-lg">Select Tower</label>
+          <select [(ngModel)]="selectedTower" (change)="loadFlats()" class="select-field w-full">
+            <option value="">-- Choose a tower --</option>
+            <option *ngFor="let t of towers" [value]="t.value">{{t.name}}</option>
+          </select>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div *ngFor="let flat of flats; let i = index" class="flat-card" [style.animation-delay]="(i * 0.1) + 's'"
+        style="animation: fadeIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) backwards">
+
+        <div class="flex justify-between items-start mb-4">
+          <div>
+            <p class="text-2xl font-bold text-gradient mb-1">Flat {{ flat.flatNo }}</p>
+            <p class="text-gray-500 text-sm">Premium Unit</p>
+          </div>
+          <div class="text-right">
+            <p class="text-3xl font-bold text-gray-800">₹{{ flat.rent }}</p>
+            <p class="text-gray-500 text-sm">per month</p>
+          </div>
+        </div>
+
+        <div class="border-t border-gray-200 pt-4">
+          <button *ngIf="flat.isAvailable && !flat.requestStatus && loadingFlatId !== flat.id"
+            (click)="requestBooking(flat)" class="btn-primary w-full">
+            Request Booking
+          </button>
+
+          <div *ngIf="loadingFlatId === flat.id" class="text-center py-3">
+            <div class="inline-block animate-spin text-3xl">⏳</div>
+            <p class="text-gray-600 mt-2">Processing...</p>
+          </div>
+
+          <div *ngIf="flat.requestStatus === 'Requested'" class="text-center">
+            <span class="badge badge-warning">📋 Booking Requested</span>
+          </div>
+
+          <div *ngIf="!flat.isAvailable" class="text-center">
+            <span class="badge badge-error">🔒 Already Booked</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div *ngIf="selectedFloor && selectedTower && flats.length === 0" class="text-center py-16 glass-card">
+      <div class="text-6xl mb-4">🏢</div>
+      <p class="text-xl text-gray-600">No flats available on this floor</p>
+    </div>
+
+  </div>
+</div>

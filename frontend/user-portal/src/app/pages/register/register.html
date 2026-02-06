@@ -1,0 +1,39 @@
+<div class="min-h-screen flex items-center justify-center animated-bg p-6">
+  <div class="glass-card p-10 w-full max-w-md animate-scale">
+
+    <div class="text-center mb-8">
+      <h2 class="text-4xl font-bold text-gradient mb-2">Create Account</h2>
+      <p class="text-gray-600">Join us and find your perfect home</p>
+    </div>
+
+    <input type="text" id="name" name="name" placeholder="Full Name" class="input-field mb-4" [(ngModel)]="name" />
+
+    <input type="email" id="email" name="email" placeholder="Email address" class="input-field mb-4"
+      [(ngModel)]="email" />
+
+    <input type="password" id="password" name="password" placeholder="Password" class="input-field mb-4"
+      [(ngModel)]="password" />
+
+    <p *ngIf="success" class="text-green-600 text-sm mb-4 font-medium bg-green-50 p-3 rounded-lg">
+      ✓ {{ success }}
+    </p>
+
+    <p *ngIf="error" class="text-red-500 text-sm mb-4 font-medium bg-red-50 p-3 rounded-lg">
+      ⚠️ {{ error }}
+    </p>
+
+    <button class="btn-success w-full mb-4" (click)="register()">
+      Create Account
+    </button>
+
+    <div class="text-center">
+      <p class="text-gray-600">
+        Already have an account?
+        <a routerLink="/login" class="text-gradient font-semibold hover:underline cursor-pointer">
+          Sign in here
+        </a>
+      </p>
+    </div>
+
+  </div>
+</div>

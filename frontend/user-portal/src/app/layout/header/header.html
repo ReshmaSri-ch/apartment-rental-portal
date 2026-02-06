@@ -1,0 +1,66 @@
+<header class="glass-card px-8 py-5 flex justify-between items-center sticky top-0 z-50 mx-4 my-4 animate-fade-in">
+  <!-- LEFT : APP NAME -->
+  <div class="text-2xl font-bold text-gradient cursor-pointer hover-lift" (click)="router.navigate(['/'])">
+    🏢 Smart Rental Portal
+  </div>
+
+  <!-- RIGHT : NAV LINKS -->
+  <nav class="flex gap-8 items-center">
+
+    <!-- NOT LOGGED IN - USER PORTAL -->
+    <ng-container *ngIf="!isLoggedIn && !isAdminRoute">
+      <a routerLink="/login"
+        class="nav-link font-semibold text-gray-700 hover:text-purple-600 transition-all duration-300 relative group">
+        Login
+        <span
+          class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-600 to-pink-600 group-hover:w-full transition-all duration-300"></span>
+      </a>
+      <a routerLink="/register" class="btn-primary">Register</a>
+    </ng-container>
+
+    <!-- NOT LOGGED IN - ADMIN PORTAL -->
+    <ng-container *ngIf="!isLoggedIn && isAdminRoute">
+      <a routerLink="/admin/login"
+        class="nav-link font-semibold text-gray-700 hover:text-purple-600 transition-all duration-300 relative group">
+        Login
+        <span
+          class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-600 to-pink-600 group-hover:w-full transition-all duration-300"></span>
+      </a>
+    </ng-container>
+
+    <!-- USER -->
+    <ng-container *ngIf="isLoggedIn && role === 'user'">
+      <a routerLink="/flats"
+        class="nav-link font-semibold text-gray-700 hover:text-purple-600 transition-all duration-300 relative group">
+        Flats
+        <span
+          class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-600 to-pink-600 group-hover:w-full transition-all duration-300"></span>
+      </a>
+      <a routerLink="/booking-status"
+        class="nav-link font-semibold text-gray-700 hover:text-purple-600 transition-all duration-300 relative group">
+        My Bookings
+        <span
+          class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-600 to-pink-600 group-hover:w-full transition-all duration-300"></span>
+      </a>
+      <button class="btn-secondary" (click)="logout()">Logout</button>
+    </ng-container>
+
+    <!-- ADMIN -->
+    <ng-container *ngIf="isLoggedIn && role === 'admin'">
+      <a routerLink="/admin/dashboard"
+        class="nav-link font-semibold text-gray-700 hover:text-purple-600 transition-all duration-300 relative group">
+        Dashboard
+        <span
+          class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-600 to-pink-600 group-hover:w-full transition-all duration-300"></span>
+      </a>
+      <a routerLink="/admin/bookings"
+        class="nav-link font-semibold text-gray-700 hover:text-purple-600 transition-all duration-300 relative group">
+        Bookings
+        <span
+          class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-600 to-pink-600 group-hover:w-full transition-all duration-300"></span>
+      </a>
+      <button class="btn-secondary" (click)="logout()">Logout</button>
+    </ng-container>
+
+  </nav>
+</header>
