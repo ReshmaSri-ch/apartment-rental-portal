@@ -18,7 +18,11 @@ app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY", "super-secret-key")
 
 CORS(app)
 JWTManager(app)
-
+@app.route("/", methods=["GET"])
+def home():
+    return jsonify({
+        "message": "Apartment Rental Portal Backend is running"
+    }), 200
 # Health check endpoint
 @app.route("/health", methods=["GET"])
 def health():

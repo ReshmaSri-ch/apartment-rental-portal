@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { DashboardService } from '../../../services/dashboard.service';
@@ -25,7 +25,10 @@ export class Dashboard implements OnInit {
   loading = true;
   error = '';
 
-  constructor(private dashboardService: DashboardService) { }
+  constructor(
+    private dashboardService: DashboardService,
+    private cdr: ChangeDetectorRef
+  ) { }
 
   ngOnInit() {
     this.loadStats();
@@ -33,8 +36,10 @@ export class Dashboard implements OnInit {
 
   loadStats() {
     this.loading = true;
+    console.log('Loading stats...');
     this.dashboardService.getStats().subscribe({
       next: (data) => {
+        console.log('Stats received:', data);
         this.stats = [
           { label: 'Total Towers', value: data.total_towers },
           { label: 'Total Flats', value: data.total_flats },
@@ -42,11 +47,13 @@ export class Dashboard implements OnInit {
           { label: 'Occupied Flats', value: data.occupied_flats }
         ];
         this.loading = false;
+        this.cdr.detectChanges(); // Force UI update
       },
       error: (err) => {
         console.error('Error loading dashboard stats:', err);
         this.error = 'Failed to load dashboard statistics';
         this.loading = false;
+        this.cdr.detectChanges();
       }
     });
   }
