@@ -38,10 +38,6 @@ A comprehensive apartment rental management system built with Angular 20, Flask,
    ```bash
    docker-compose up -d --build
    ```
-4. **Access the Application**:
-   - **Frontend**: http://localhost
-   - **Backend API**: http://localhost:5000
-   - **Health Check**: http://localhost:5000/health
 
 ### Demo Credentials
 - **Admin**: Create a user via registration, then manually update their role to 'admin' in the database.
